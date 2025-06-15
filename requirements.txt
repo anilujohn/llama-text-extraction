@@ -1,0 +1,24 @@
+# Core Google Cloud libraries for Vertex AI
+google-cloud-aiplatform==1.56.0
+google-cloud-storage==2.10.0
+
+# Authentication libraries
+google-auth==2.23.4
+google-auth-oauthlib==1.1.0
+google-auth-httplib2==0.1.1
+
+# Image processing libraries
+Pillow==10.1.0  # For basic image operations
+opencv-python==4.8.1.78  # For advanced image processing
+
+# API and networking
+requests==2.31.0
+urllib3==2.1.0
+
+# Utility libraries
+python-dotenv==1.0.0  # For managing environment variables
+tqdm==4.66.1  # For progress bars
+colorama==0.4.6  # For colored terminal output on Windows
+
+# Data handling
+numpy==1.26.4  # Updated to support Python 3.12
