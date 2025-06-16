@@ -1,5 +1,5 @@
 """
-Llama 4 Text Extractor - Simplified Local Version
+Llama 4 Text Extractor - Updated with correct endpoint
 This module extracts text from scanned textbook pages using Vertex AI's Llama 4.
 """
 
@@ -79,8 +79,8 @@ class LocalLlama4Extractor:
             scopes=['https://www.googleapis.com/auth/cloud-platform']
         )
         
-        # API endpoint for Llama 4
-        self.endpoint = f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/publishers/meta/models/{MODEL_ID}:streamChat"
+        # Use the generateContent endpoint which exists (based on diagnostic results)
+        self.endpoint = f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/publishers/meta/models/{MODEL_ID}:generateContent"
         
         logger.info("Initialization complete!")
     
@@ -155,31 +155,30 @@ IMPORTANT INSTRUCTIONS:
 
 Begin extraction now:"""
         
-        # Prepare the API request
+        # Prepare the API request for generateContent endpoint
         request_body = {
-            "parameters": {
-                "max_output_tokens": MAX_OUTPUT_TOKENS,
-                "temperature": TEMPERATURE,
-                "top_p": TOP_P,
-                "top_k": TOP_K
-            },
-            "messages": [
+            "contents": [
                 {
                     "role": "user",
-                    "content": [
+                    "parts": [
                         {
-                            "type": "text",
                             "text": extraction_prompt
                         },
                         {
-                            "type": "image",
-                            "image": {
-                                "bytes": encoded_image
+                            "inlineData": {
+                                "mimeType": "image/jpeg",
+                                "data": encoded_image
                             }
                         }
                     ]
                 }
-            ]
+            ],
+            "generationConfig": {
+                "maxOutputTokens": MAX_OUTPUT_TOKENS,
+                "temperature": TEMPERATURE,
+                "topP": TOP_P,
+                "topK": TOP_K
+            }
         }
         
         # Get authentication token
@@ -197,35 +196,24 @@ Begin extraction now:"""
             response = requests.post(
                 self.endpoint,
                 headers=headers,
-                json=request_body,
-                stream=True
+                json=request_body
             )
             
             if response.status_code != 200:
                 logger.error(f"API error: {response.status_code} - {response.text}")
                 raise Exception(f"API request failed: {response.status_code}")
             
-            # Process streaming response
+            # Parse response
+            response_data = response.json()
+            
+            # Extract text from response
             extracted_text = ""
-            for line in response.iter_lines():
-                if line:
-                    try:
-                        # Remove 'data: ' prefix if present
-                        line_str = line.decode('utf-8')
-                        if line_str.startswith('data: '):
-                            line_str = line_str[6:]
-                        
-                        data = json.loads(line_str)
-                        
-                        # Extract text from response
-                        if 'candidates' in data and data['candidates']:
-                            content = data['candidates'][0].get('content', {})
-                            parts = content.get('parts', [])
-                            for part in parts:
-                                if 'text' in part:
-                                    extracted_text += part['text']
-                    except json.JSONDecodeError:
-                        continue
+            if "candidates" in response_data:
+                for candidate in response_data["candidates"]:
+                    if "content" in candidate and "parts" in candidate["content"]:
+                        for part in candidate["content"]["parts"]:
+                            if "text" in part:
+                                extracted_text += part["text"]
             
             logger.info(f"Successfully extracted {len(extracted_text)} characters")
             return extracted_text.strip()
