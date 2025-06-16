@@ -1,6 +1,75 @@
-.env 
-*.json 
-__pycache__/ 
-logs/ 
-data/input/* 
-data/output/* 
+# CRITICAL: Environment files with secrets
+.env
+.env.*
+!.env.example
+
+# Google Cloud credentials - NEVER commit these!
+*.json
+*-key.json
+*credentials*.json
+service-account-*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Virtual environments
+llama-textract/
+llama-textract-stable/
+llama-textract-v2/
+
+# Data files (usually too large and/or sensitive)
+data/input/*
+data/output/*
+!data/input/.gitkeep
+!data/output/.gitkeep
+!data/input/README.md
+!data/output/README.md
+
+# Logs (might contain sensitive info)
+logs/
+*.log
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
