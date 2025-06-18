@@ -1,5 +1,5 @@
 """
-Llama 4 Text Extractor - Updated with correct endpoint
+Llama 4 Text Extractor - Updated with correct endpoint and token counting
 This module extracts text from scanned textbook pages using Vertex AI's Llama 4.
 """
 
@@ -9,7 +9,7 @@ import json
 import base64
 import logging
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from PIL import Image
 import io
 
@@ -82,6 +82,11 @@ class LocalLlama4Extractor:
         # Use the generateContent endpoint which exists (based on diagnostic results)
         self.endpoint = f"https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/{LOCATION}/publishers/meta/models/{MODEL_ID}:generateContent"
         
+        # Initialize token tracking
+        self.total_input_tokens = 0
+        self.total_output_tokens = 0
+        self.total_api_calls = 0
+        
         logger.info("Initialization complete!")
     
     def prepare_image(self, image_path: Path) -> str:
@@ -123,15 +128,15 @@ class LocalLlama4Extractor:
             logger.error(f"Error preparing image: {e}")
             raise
     
-    def extract_text_from_image(self, image_path: Path) -> str:
+    def extract_text_from_image(self, image_path: Path) -> Tuple[str, Dict[str, int]]:
         """
-        Extract text from a single image file.
+        Extract text from a single image file with token counting.
         
         Args:
             image_path: Path to the image file
             
         Returns:
-            Extracted text as a string
+            Tuple of (extracted text, token usage dict)
         """
         
         logger.info(f"Starting text extraction for: {image_path.name}")
@@ -215,8 +220,34 @@ Begin extraction now:"""
                             if "text" in part:
                                 extracted_text += part["text"]
             
+            # Extract token usage information
+            token_usage = {
+                "input_tokens": 0,
+                "output_tokens": 0,
+                "total_tokens": 0
+            }
+            
+            if "usageMetadata" in response_data:
+                usage = response_data["usageMetadata"]
+                token_usage["input_tokens"] = usage.get("promptTokenCount", 0)
+                token_usage["output_tokens"] = usage.get("candidatesTokenCount", 0)
+                token_usage["total_tokens"] = usage.get("totalTokenCount", 0)
+                
+                # Log token usage for this API call
+                logger.info(f"Token Usage for {image_path.name}:")
+                logger.info(f"  - Input tokens: {token_usage['input_tokens']}")
+                logger.info(f"  - Output tokens: {token_usage['output_tokens']}")
+                logger.info(f"  - Total tokens: {token_usage['total_tokens']}")
+                
+                # Update cumulative totals
+                self.total_input_tokens += token_usage["input_tokens"]
+                self.total_output_tokens += token_usage["output_tokens"]
+                self.total_api_calls += 1
+            else:
+                logger.warning("No token usage metadata found in API response")
+            
             logger.info(f"Successfully extracted {len(extracted_text)} characters")
-            return extracted_text.strip()
+            return extracted_text.strip(), token_usage
             
         except Exception as e:
             logger.error(f"Error during text extraction: {e}")
@@ -251,14 +282,15 @@ Begin extraction now:"""
         logger.info(f"Found {len(image_files)} images to process")
         
         results = {}
+        token_summary = []
         
         # Process each image
         for i, image_file in enumerate(image_files, 1):
             logger.info(f"\nProcessing image {i}/{len(image_files)}: {image_file.name}")
             
             try:
-                # Extract text
-                extracted_text = self.extract_text_from_image(image_file)
+                # Extract text and get token usage
+                extracted_text, token_usage = self.extract_text_from_image(image_file)
                 
                 # Save to file
                 output_file = output_folder / f"{image_file.stem}_extracted.txt"
@@ -267,21 +299,74 @@ Begin extraction now:"""
                 logger.info(f"Saved extracted text to: {output_file}")
                 results[image_file.name] = extracted_text
                 
+                # Store token usage for summary
+                token_summary.append({
+                    "file": image_file.name,
+                    "input_tokens": token_usage["input_tokens"],
+                    "output_tokens": token_usage["output_tokens"],
+                    "total_tokens": token_usage["total_tokens"]
+                })
+                
             except Exception as e:
                 logger.error(f"Failed to process {image_file.name}: {e}")
                 results[image_file.name] = f"ERROR: {str(e)}"
         
-        # Create summary file
+        # Log overall token usage summary
+        logger.info("\n" + "="*60)
+        logger.info("TOKEN USAGE SUMMARY:")
+        logger.info("="*60)
+        logger.info(f"Total API calls: {self.total_api_calls}")
+        logger.info(f"Total input tokens: {self.total_input_tokens}")
+        logger.info(f"Total output tokens: {self.total_output_tokens}")
+        logger.info(f"Total tokens used: {self.total_input_tokens + self.total_output_tokens}")
+        
+        if self.total_api_calls > 0:
+            logger.info(f"Average input tokens per call: {self.total_input_tokens / self.total_api_calls:.2f}")
+            logger.info(f"Average output tokens per call: {self.total_output_tokens / self.total_api_calls:.2f}")
+        
+        # Estimate cost (approximate - adjust based on actual pricing)
+        # Example pricing: $0.075 per 1M tokens
+        estimated_cost = (self.total_input_tokens + self.total_output_tokens) / 1_000_000 * 0.075
+        logger.info(f"Estimated cost: ${estimated_cost:.4f}")
+        logger.info("="*60)
+        
+        # Create detailed summary file
         summary_file = output_folder / "extraction_summary.txt"
         with open(summary_file, 'w', encoding='utf-8') as f:
             f.write("Text Extraction Summary\n")
             f.write("=" * 50 + "\n\n")
             
+            # File processing results
+            f.write("Processing Results:\n")
+            f.write("-" * 30 + "\n")
             for filename, status in results.items():
                 if status.startswith("ERROR"):
                     f.write(f"❌ {filename}: {status}\n")
                 else:
                     f.write(f"✅ {filename}: Extracted {len(status)} characters\n")
+            
+            # Token usage details
+            f.write("\n\nToken Usage Details:\n")
+            f.write("-" * 30 + "\n")
+            for item in token_summary:
+                f.write(f"{item['file']}:\n")
+                f.write(f"  Input tokens: {item['input_tokens']}\n")
+                f.write(f"  Output tokens: {item['output_tokens']}\n")
+                f.write(f"  Total: {item['total_tokens']}\n\n")
+            
+            # Overall summary
+            f.write("\nOverall Token Usage:\n")
+            f.write("-" * 30 + "\n")
+            f.write(f"Total API calls: {self.total_api_calls}\n")
+            f.write(f"Total input tokens: {self.total_input_tokens}\n")
+            f.write(f"Total output tokens: {self.total_output_tokens}\n")
+            f.write(f"Total tokens used: {self.total_input_tokens + self.total_output_tokens}\n")
+            
+            if self.total_api_calls > 0:
+                f.write(f"Average input tokens per call: {self.total_input_tokens / self.total_api_calls:.2f}\n")
+                f.write(f"Average output tokens per call: {self.total_output_tokens / self.total_api_calls:.2f}\n")
+            
+            f.write(f"\nEstimated cost: ${estimated_cost:.4f}\n")
         
         logger.info(f"\nProcessing complete! Summary saved to: {summary_file}")
         return results
@@ -290,8 +375,8 @@ Begin extraction now:"""
 def main():
     """Main function to demonstrate usage."""
     
-    print("Llama 4 Text Extractor - Local Version")
-    print("=" * 50)
+    print("Llama 4 Text Extractor - Local Version with Token Counting")
+    print("=" * 60)
     
     try:
         # Create extractor instance
@@ -313,6 +398,7 @@ def main():
         
         print("\nExtraction complete!")
         print(f"Check {OUTPUT_DIR} for extracted text files.")
+        print(f"Check {LOG_DIR} for detailed token usage information.")
         
     except Exception as e:
         print(f"\nError: {e}")

@@ -1,5 +1,5 @@
 """
-Simple test script to verify the setup and test single image extraction.
+Simple test script to verify the setup and test single image extraction with token counting.
 """
 
 import sys
@@ -14,10 +14,10 @@ from config.settings import INPUT_DIR, OUTPUT_DIR
 
 
 def test_single_image():
-    """Test extraction on a single image."""
+    """Test extraction on a single image with token usage display."""
     
-    print("Simple Text Extraction Test")
-    print("=" * 50)
+    print("Simple Text Extraction Test with Token Counting")
+    print("=" * 60)
     
     # Look for a test image
     test_images = list(INPUT_DIR.glob("*.jpg")) + list(INPUT_DIR.glob("*.png"))
@@ -38,7 +38,19 @@ def test_single_image():
         
         # Extract text
         print(f"\nExtracting text from {test_image.name}...")
-        text = extractor.extract_text_from_image(test_image)
+        text, token_usage = extractor.extract_text_from_image(test_image)
+        
+        # Display token usage
+        print("\n" + "="*50)
+        print("TOKEN USAGE:")
+        print("="*50)
+        print(f"Input tokens: {token_usage['input_tokens']}")
+        print(f"Output tokens: {token_usage['output_tokens']}")
+        print(f"Total tokens: {token_usage['total_tokens']}")
+        
+        # Estimate cost (approximate)
+        estimated_cost = token_usage['total_tokens'] / 1_000_000 * 0.075
+        print(f"Estimated cost for this image: ${estimated_cost:.6f}")
         
         # Display results
         print("\n" + "="*50)
