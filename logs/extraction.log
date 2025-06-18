@@ -70,3 +70,13 @@
 2025-06-15 23:42:39,475 - src.llama4_extractor - INFO - Image prepared successfully. Size: 163700 bytes
 2025-06-15 23:42:39,866 - src.llama4_extractor - INFO - Sending request to Llama 4 API...
 2025-06-15 23:42:48,270 - src.llama4_extractor - INFO - Successfully extracted 1286 characters
+2025-06-16 10:35:31,670 - src.llama4_extractor - INFO - Initializing Llama 4 Text Extractor...
+2025-06-16 10:39:11,092 - src.llama4_extractor - INFO - Initializing Llama 4 Text Extractor...
+2025-06-16 10:39:11,092 - src.llama4_extractor - INFO - Using project: alphamudramonitoringconsoleapp
+2025-06-16 10:39:11,092 - src.llama4_extractor - INFO - Using location: us-east5
+2025-06-16 10:39:11,120 - src.llama4_extractor - INFO - Initialization complete!
+2025-06-16 10:39:11,121 - src.llama4_extractor - INFO - Starting text extraction for: 20250611_152610.jpg
+2025-06-16 10:39:11,121 - src.llama4_extractor - INFO - Preparing image: C:\Users\anilj\Documents\Projects\llama-text-extraction\data\input\20250611_152610.jpg
+2025-06-16 10:39:11,226 - src.llama4_extractor - INFO - Image prepared successfully. Size: 163700 bytes
+2025-06-16 10:39:11,645 - src.llama4_extractor - INFO - Sending request to Llama 4 API...
+2025-06-16 10:39:19,605 - src.llama4_extractor - INFO - Successfully extracted 1283 characters
