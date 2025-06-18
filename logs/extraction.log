@@ -80,3 +80,51 @@
 2025-06-16 10:39:11,226 - src.llama4_extractor - INFO - Image prepared successfully. Size: 163700 bytes
 2025-06-16 10:39:11,645 - src.llama4_extractor - INFO - Sending request to Llama 4 API...
 2025-06-16 10:39:19,605 - src.llama4_extractor - INFO - Successfully extracted 1283 characters
+2025-06-18 22:38:01,885 - src.llama4_extractor - INFO - Initializing Llama 4 Text Extractor...
+2025-06-18 22:38:01,886 - src.llama4_extractor - INFO - Using project: alphamudramonitoringconsoleapp
+2025-06-18 22:38:01,886 - src.llama4_extractor - INFO - Using location: us-east5
+2025-06-18 22:38:01,903 - src.llama4_extractor - INFO - Initialization complete!
+2025-06-18 22:38:01,903 - src.llama4_extractor - INFO - Starting text extraction for: 20250611_152610.jpg
+2025-06-18 22:38:01,903 - src.llama4_extractor - INFO - Preparing image: C:\Users\anilj\Documents\Projects\llama-text-extraction\data\input\20250611_152610.jpg
+2025-06-18 22:38:02,019 - src.llama4_extractor - INFO - Image prepared successfully. Size: 163700 bytes
+2025-06-18 22:38:02,450 - src.llama4_extractor - INFO - Sending request to Llama 4 API...
+2025-06-18 22:38:10,598 - src.llama4_extractor - INFO - Token Usage for 20250611_152610.jpg:
+2025-06-18 22:38:10,599 - src.llama4_extractor - INFO -   - Input tokens: 2485
+2025-06-18 22:38:10,599 - src.llama4_extractor - INFO -   - Output tokens: 480
+2025-06-18 22:38:10,599 - src.llama4_extractor - INFO -   - Total tokens: 2965
+2025-06-18 22:38:10,599 - src.llama4_extractor - INFO - Successfully extracted 1286 characters
+2025-06-18 22:39:12,207 - src.llama4_extractor - INFO - Initializing Llama 4 Text Extractor...
+2025-06-18 22:39:12,207 - src.llama4_extractor - INFO - Using project: alphamudramonitoringconsoleapp
+2025-06-18 22:39:12,207 - src.llama4_extractor - INFO - Using location: us-east5
+2025-06-18 22:39:12,207 - src.llama4_extractor - INFO - Initialization complete!
+2025-06-18 22:39:12,207 - src.llama4_extractor - INFO - Starting text extraction for: 20250611_152237.jpg
+2025-06-18 22:39:12,207 - src.llama4_extractor - INFO - Preparing image: C:\Users\anilj\Documents\Projects\llama-text-extraction\data\input\20250611_152237.jpg
+2025-06-18 22:39:12,416 - src.llama4_extractor - INFO - Image prepared successfully. Size: 166552 bytes
+2025-06-18 22:39:12,788 - src.llama4_extractor - INFO - Sending request to Llama 4 API...
+2025-06-18 22:39:20,931 - src.llama4_extractor - INFO - Token Usage for 20250611_152237.jpg:
+2025-06-18 22:39:20,931 - src.llama4_extractor - INFO -   - Input tokens: 2491
+2025-06-18 22:39:20,931 - src.llama4_extractor - INFO -   - Output tokens: 493
+2025-06-18 22:39:20,931 - src.llama4_extractor - INFO -   - Total tokens: 2984
+2025-06-18 22:39:20,931 - src.llama4_extractor - INFO - Successfully extracted 1309 characters
+2025-06-18 22:47:50,929 - src.llama4_extractor - INFO - Initializing Llama 4 Text Extractor...
+2025-06-18 22:47:50,930 - src.llama4_extractor - INFO - Using project: alphamudramonitoringconsoleapp
+2025-06-18 22:47:50,930 - src.llama4_extractor - INFO - Using location: us-east5
+2025-06-18 22:47:50,932 - src.llama4_extractor - INFO - Initialization complete!
+2025-06-18 22:47:50,933 - src.llama4_extractor - INFO - Starting text extraction for: 20250611_152237.jpg
+2025-06-18 22:47:50,933 - src.llama4_extractor - INFO - Preparing image: C:\Users\anilj\Documents\Projects\llama-text-extraction\data\input\20250611_152237.jpg
+2025-06-18 22:47:51,117 - src.llama4_extractor - INFO - Image prepared successfully. Size: 166552 bytes
+2025-06-18 22:47:51,524 - src.llama4_extractor - INFO - Sending request to Llama 4 API...
+2025-06-18 22:47:59,687 - src.llama4_extractor - INFO - Token Usage for 20250611_152237.jpg:
+2025-06-18 22:47:59,687 - src.llama4_extractor - INFO -   - Input tokens: 2491
+2025-06-18 22:47:59,688 - src.llama4_extractor - INFO -   - Output tokens: 493
+2025-06-18 22:47:59,688 - src.llama4_extractor - INFO -   - Total tokens: 2984
+2025-06-18 22:47:59,688 - src.llama4_extractor - INFO - Successfully extracted 1309 characters
+2025-06-18 22:48:04,690 - src.llama4_extractor - INFO - Starting text extraction for: 20250611_152610.jpg
+2025-06-18 22:48:04,690 - src.llama4_extractor - INFO - Preparing image: C:\Users\anilj\Documents\Projects\llama-text-extraction\data\input\20250611_152610.jpg
+2025-06-18 22:48:04,785 - src.llama4_extractor - INFO - Image prepared successfully. Size: 163700 bytes
+2025-06-18 22:48:06,230 - src.llama4_extractor - INFO - Sending request to Llama 4 API...
+2025-06-18 22:48:14,512 - src.llama4_extractor - INFO - Token Usage for 20250611_152610.jpg:
+2025-06-18 22:48:14,512 - src.llama4_extractor - INFO -   - Input tokens: 2485
+2025-06-18 22:48:14,512 - src.llama4_extractor - INFO -   - Output tokens: 480
+2025-06-18 22:48:14,512 - src.llama4_extractor - INFO -   - Total tokens: 2965
+2025-06-18 22:48:14,512 - src.llama4_extractor - INFO - Successfully extracted 1279 characters
